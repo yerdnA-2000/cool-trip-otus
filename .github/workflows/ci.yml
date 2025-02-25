@@ -41,8 +41,14 @@ jobs:
         run: |
           composer install --prefer-dist --no-progress --no-suggest
 
+      - name: Wait for DB to be ready
+        run: |
+          echo "Waiting for db to be ready..."
+          sleep 10
+
       - name: Prepare database
         run: |
+          export DATABASE_URL="postgresql://symfony:symfony@db:5432/symfony?serverVersion=15&charset=utf8"
           php bin/console doctrine:database:create --if-not-exists --env=test
           php bin/console doctrine:migrations:migrate --no-interaction --env=test
 
