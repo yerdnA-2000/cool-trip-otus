@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  app:
+    image: php:8.2-fpm
+    container_name: app
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    networks:
+      - symfony-network
+
+  db:
+    image: postgres:15
+    container_name: db
+    environment:
+      POSTGRES_DB: symfony
+      POSTGRES_USER: symfony
+      POSTGRES_PASSWORD: symfony
+    ports:
+      - "5432:5432"
+    networks:
+      - symfony-network
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - symfony-network
+
+networks:
+  symfony-network:
+    driver: bridge
