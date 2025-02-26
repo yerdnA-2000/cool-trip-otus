@@ -40,7 +40,8 @@ jobs:
       - name: Install PDO PostgreSQL driver
         run: |
           sudo apt-get update && sudo apt-get install -y libpq-dev
-          sudo docker-php-ext-install pdo_pgsql
+          sudo pecl install pdo_pgsql
+          echo "extension=pdo_pgsql.so" | sudo tee -a /etc/php/8.2/cli/php.ini
 
       - name: Install dependencies
         run: |
