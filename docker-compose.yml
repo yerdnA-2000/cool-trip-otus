@@ -9,12 +9,19 @@ services:
       - .:/var/www/html
     networks:
       - symfony-network
+    command: >
+      bash -c "
+        apt-get update && 
+        apt-get install -y libpq-dev && 
+        docker-php-ext-install pdo_pgsql && 
+        php-fpm
+      "
 
   db:
     image: postgres:15
     container_name: db
     environment:
-      POSTGRES_DB: symfony
+      POSTGRES_DB: cooltrip
       POSTGRES_USER: symfony
       POSTGRES_PASSWORD: symfony
     ports:

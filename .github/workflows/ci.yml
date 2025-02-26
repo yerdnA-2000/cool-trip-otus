@@ -16,7 +16,7 @@ jobs:
       db:
         image: postgres:15
         env:
-          POSTGRES_DB: symfony
+          POSTGRES_DB: cooltrip
           POSTGRES_USER: symfony
           POSTGRES_PASSWORD: symfony
         ports:
@@ -39,6 +39,8 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo apt-get update && sudo apt-get install -y libpq-dev
+          sudo docker-php-ext-install pdo_pgsql
           composer install --prefer-dist --no-progress --no-suggest
 
       - name: Wait for DB to be ready
@@ -48,17 +50,18 @@ jobs:
 
       - name: Prepare database
         run: |
-          export DATABASE_URL="postgresql://symfony:symfony@localhost:5432/symfony?serverVersion=15&charset=utf8"
+          export DATABASE_URL="postgresql://symfony:symfony@localhost:5432/cooltrip?serverVersion=15&charset=utf8"
           php bin/console doctrine:database:create --if-not-exists --env=test
+          php bin/console doctrine:migrations:migrate --no-interaction --env=test
 
       - name: Check migrations status
         run: |
-          export DATABASE_URL="postgresql://symfony:symfony@localhost:5432/symfony?serverVersion=15&charset=utf8"
+          export DATABASE_URL="postgresql://symfony:symfony@localhost:5432/cooltrip?serverVersion=15&charset=utf8"
           php bin/console doctrine:migrations:status --env=test
 
       - name: Apply migrations if available
         run: |
-          export DATABASE_URL="postgresql://symfony:symfony@localhost:5432/symfony?serverVersion=15&charset=utf8"
+          export DATABASE_URL="postgresql://symfony:symfony@localhost:5432/cooltrip?serverVersion=15&charset=utf8"
           php bin/console doctrine:migrations:migrate --no-interaction --env=test || true
 
       - name: Run tests

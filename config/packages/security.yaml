@@ -19,17 +19,27 @@ security:
             stateless: true
             jwt: ~
 
+        api_login:
+            pattern: ^/api/login
+            stateless: true
+            jwt: ~
+
+        api_register:
+            pattern: ^/api/register
+            stateless: true
+            custom_authenticators:
+                - App\Security\AnonymousAuthenticator
+
         main:
             lazy: true
             provider: app_user_provider
-            form_login:
-                login_path: login
-                check_path: login
+            jwt: ~
             logout:
                 path: logout
 
     access_control:
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/register, role: PUBLIC_ACCESS }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:

@@ -12,6 +12,7 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
@@ -22,12 +23,18 @@ class SecurityController extends AbstractController
         private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly ManagerRegistry $doctrine,
         private readonly TagAwareCacheInterface $cache,
+        private readonly ValidatorInterface $validator,
     ) {
     }
 
     #[Route('/api/login', name: 'app_login', methods: ['POST'])]
     public function login(#[MapRequestPayload] LoginRequestDto $request): JsonResponse
     {
+        $errors = $this->validator->validate($request);
+        if (count($errors) > 0) {
+            return new JsonResponse(['errors' => $errors], 400);
+        }
+
         $user = $this->getUserByEmail($request->email);
 
         if (!$user || !$this->checkPassword($user, $request->password)) {
