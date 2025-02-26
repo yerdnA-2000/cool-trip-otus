@@ -35,13 +35,8 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
+          extensions: pdo_pgsql
           tools: composer:v2
-
-      - name: Install PDO PostgreSQL driver
-        run: |
-          sudo apt-get update && sudo apt-get install -y libpq-dev
-          sudo pecl install pdo_pgsql
-          echo "extension=pdo_pgsql.so" | sudo tee -a /etc/php/8.2/cli/php.ini
 
       - name: Install dependencies
         run: |
