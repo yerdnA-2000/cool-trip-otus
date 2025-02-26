@@ -9,7 +9,7 @@ use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
-use Symfony\Component\PasswordHasher\PasswordHasherInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -19,7 +19,7 @@ class SecurityController extends AbstractController
 {
     public function __construct(
         private readonly JWTTokenManagerInterface $jwtManager,
-        private readonly PasswordHasherInterface $passwordHasher,
+        private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly ManagerRegistry $doctrine,
         private readonly TagAwareCacheInterface $cache,
     ) {
@@ -54,6 +54,6 @@ class SecurityController extends AbstractController
 
     private function checkPassword(PasswordAuthenticatedUserInterface $user, #[\SensitiveParameter] string $password): bool
     {
-        return $this->passwordHasher->verify($user->getPassword(), $password);
+        return $this->passwordHasher->isPasswordValid($user, $password);
     }
 }
