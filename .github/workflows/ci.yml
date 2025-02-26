@@ -16,7 +16,7 @@ jobs:
       db:
         image: postgres:15
         env:
-          POSTGRES_DB: symfony
+          POSTGRES_DB: cooltrip
           POSTGRES_USER: symfony
           POSTGRES_PASSWORD: symfony
         ports:
@@ -35,6 +35,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
+          extensions: pdo_pgsql
           tools: composer:v2
 
       - name: Install dependencies
@@ -48,17 +49,18 @@ jobs:
 
       - name: Prepare database
         run: |
-          export DATABASE_URL="postgresql://symfony:symfony@localhost:5432/symfony?serverVersion=15&charset=utf8"
+          export DATABASE_URL="postgresql://symfony:symfony@localhost:5432/cooltrip?serverVersion=15&charset=utf8"
           php bin/console doctrine:database:create --if-not-exists --env=test
+          php bin/console doctrine:migrations:migrate --no-interaction --env=test
 
       - name: Check migrations status
         run: |
-          export DATABASE_URL="postgresql://symfony:symfony@localhost:5432/symfony?serverVersion=15&charset=utf8"
+          export DATABASE_URL="postgresql://symfony:symfony@localhost:5432/cooltrip?serverVersion=15&charset=utf8"
           php bin/console doctrine:migrations:status --env=test
 
       - name: Apply migrations if available
         run: |
-          export DATABASE_URL="postgresql://symfony:symfony@localhost:5432/symfony?serverVersion=15&charset=utf8"
+          export DATABASE_URL="postgresql://symfony:symfony@localhost:5432/cooltrip?serverVersion=15&charset=utf8"
           php bin/console doctrine:migrations:migrate --no-interaction --env=test || true
 
       - name: Run tests
