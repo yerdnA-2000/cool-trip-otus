@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: self::TABLE_NAME)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    public const TABLE_NAME = 'user';
+    public const TABLE_NAME = 'app_user';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
