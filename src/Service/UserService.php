@@ -21,7 +21,7 @@ class UserService
     {
         $existingUser = $this->doctrine->getRepository(User::class)->findOneBy(['email' => $email]);
         if ($existingUser) {
-            throw new \DomainException('User with this email already exists');
+            throw new \DomainException('User with this email already exists', 400);
         }
 
         $user = new User();

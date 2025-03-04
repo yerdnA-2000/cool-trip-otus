@@ -20,7 +20,6 @@ class RegistrationControllerTest extends WebTestCase
 
     public function testRegisterUser(): void
     {
-        // Отправка POST-запроса с JSON-данными
         $this->client->request(
             Request::METHOD_POST,
             '/api/register',
@@ -74,9 +73,9 @@ class RegistrationControllerTest extends WebTestCase
 
     protected function tearDown(): void
     {
-        // Очистка таблицы users
+        // Очистка таблицы app_user
         $entityManager = static::getContainer()->get(EntityManagerInterface::class);
-        $entityManager->getConnection()->executeQuery('TRUNCATE TABLE users CASCADE');
+        $entityManager->getConnection()->executeQuery('TRUNCATE TABLE app_user CASCADE');
 
         parent::tearDown();
     }
